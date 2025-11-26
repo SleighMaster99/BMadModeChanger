@@ -1,0 +1,40 @@
+{
+  "name": "bmad-mode-changer",
+  "version": "1.0.0",
+  "description": "Claude Code BMad Agent State Persistence - Automatically restore BMad agents after mode changes",
+  "main": "src/index.js",
+  "bin": {
+    "bmad-mode-changer": "bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js",
+    "build:exe": "pkg . --targets node18-win-x64 --output dist/bmad-mode-changer.exe",
+    "build:all": "pkg . --targets node18-win-x64,node18-macos-x64,node18-linux-x64 --out-path dist"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "bmad",
+    "agent",
+    "hooks",
+    "cli"
+  ],
+  "author": "SleighMaster99",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SleighMaster99/BMadModeChanger.git"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "pkg": {
+    "assets": [
+      "templates/**/*"
+    ],
+    "outputPath": "dist"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  }
+}
