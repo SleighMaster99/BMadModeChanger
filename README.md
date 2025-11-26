@@ -91,6 +91,9 @@ npm run build:all      # 모든 플랫폼
 
 ## 변경 이력
 
+### v1.0.4
+- `--version`, `-v` 옵션 추가
+
 ### v1.0.3
 - `install` 명령어가 자동으로 버전을 확인하고 업데이트
 - `update` 명령어 추가 (`install`과 동일)

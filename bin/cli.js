@@ -6,6 +6,7 @@
  */
 
 const installer = require('../src/index.js');
+const pkg = require('../package.json');
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -28,6 +29,7 @@ BMad 에이전트 상태를 자동으로 복원합니다.
 옵션:
   --global, -g    전역 설정에 설치 (~/.claude/)
   --force, -f     강제 재설치 (버전 무관)
+  --version, -v   버전 정보 표시
 
 예시:
   npx bmad-mode-changer install          # 설치 (새 버전 있으면 자동 업데이트)
@@ -39,6 +41,12 @@ GitHub: https://github.com/SleighMaster99/BMadModeChanger
 `;
 
 async function main() {
+  // 버전 확인 (어디서든 --version 또는 -v가 있으면 버전 출력)
+  if (args.includes('--version') || args.includes('-v')) {
+    console.log(`bmad-mode-changer v${pkg.version}`);
+    return;
+  }
+
   const options = {
     global: args.includes('--global') || args.includes('-g'),
     force: args.includes('--force') || args.includes('-f')
