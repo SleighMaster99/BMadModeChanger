@@ -171,6 +171,87 @@ async function install(options = {}) {
 }
 
 /**
+ * settings.json에서 bmad-mode-changer hook만 제거
+ */
+function removeFromSettings(targetDir, options) {
+  const settingsPath = options.global
+    ? path.join(targetDir, 'settings.json')
+    : path.join(targetDir, 'settings.local.json');
+
+  if (!fs.existsSync(settingsPath)) {
+    console.log('  ⏭️  건너뜀 (파일 없음): settings 파일');
+    return;
+  }
+
+  try {
+    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+
+    if (!settings.hooks?.UserPromptSubmit) {
+      console.log('  ⏭️  건너뜀 (설정 없음): UserPromptSubmit hook');
+      return;
+    }
+
+    // bmad-mode-changer hook만 제거 (다른 hook 유지)
+    const originalLength = settings.hooks.UserPromptSubmit.length;
+    settings.hooks.UserPromptSubmit = settings.hooks.UserPromptSubmit.filter(h =>
+      !h.hooks?.some(hook => hook.command?.includes('agent-state-manager'))
+    );
+
+    // UserPromptSubmit이 비어있으면 제거
+    if (settings.hooks.UserPromptSubmit.length === 0) {
+      delete settings.hooks.UserPromptSubmit;
+    }
+
+    // hooks 객체가 비어있으면 제거
+    if (Object.keys(settings.hooks).length === 0) {
+      delete settings.hooks;
+    }
+
+    if (settings.hooks?.UserPromptSubmit?.length !== originalLength || originalLength > 0) {
+      fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2), 'utf8');
+      console.log('  ✅ 제거됨: settings hook 설정');
+    }
+  } catch (e) {
+    console.log('  ⚠️  설정 파일 처리 중 오류:', e.message);
+  }
+}
+
+/**
+ * CLAUDE.md에서 bmad-mode-changer 섹션만 제거
+ */
+function removeFromClaudeMd(options) {
+  const claudeMdPath = options.global
+    ? path.join(os.homedir(), '.claude', 'CLAUDE.md')
+    : path.join(process.cwd(), 'CLAUDE.md');
+
+  if (!fs.existsSync(claudeMdPath)) {
+    console.log('  ⏭️  건너뜀 (파일 없음): CLAUDE.md');
+    return;
+  }
+
+  try {
+    let content = fs.readFileSync(claudeMdPath, 'utf8');
+
+    // BMad Mode Changer 섹션 찾기 및 제거
+    // 섹션 시작: "## 모드 변경(Shift+Tab) 후 에이전트 자동 복원"
+    // 섹션 끝: 다음 ## 또는 파일 끝
+    const sectionRegex = /\n*## 모드 변경\(Shift\+Tab\) 후 에이전트 자동 복원[^]*?(?=\n## |\n# |$)/g;
+
+    if (sectionRegex.test(content)) {
+      content = content.replace(sectionRegex, '');
+      // 연속된 빈 줄 정리
+      content = content.replace(/\n{3,}/g, '\n\n').trim() + '\n';
+      fs.writeFileSync(claudeMdPath, content, 'utf8');
+      console.log('  ✅ 제거됨: CLAUDE.md 규칙 섹션');
+    } else {
+      console.log('  ⏭️  건너뜀 (섹션 없음): CLAUDE.md 규칙');
+    }
+  } catch (e) {
+    console.log('  ⚠️  CLAUDE.md 처리 중 오류:', e.message);
+  }
+}
+
+/**
  * 제거 실행
  */
 async function uninstall(options = {}) {
@@ -180,21 +261,31 @@ async function uninstall(options = {}) {
   const hookPath = path.join(targetDir, 'hooks', 'agent-state-manager.js');
   const contextPath = path.join(targetDir, '.agent-context.json');
 
-  // Hook 스크립트 삭제
+  // 1. Hook 스크립트 삭제
+  console.log('1️⃣ Hook 스크립트 삭제:');
   if (fs.existsSync(hookPath)) {
     fs.unlinkSync(hookPath);
     console.log('  ✅ 삭제됨: agent-state-manager.js');
+  } else {
+    console.log('  ⏭️  건너뜀 (파일 없음): agent-state-manager.js');
   }
 
-  // 컨텍스트 파일 삭제
+  // 2. 컨텍스트 파일 삭제
   if (fs.existsSync(contextPath)) {
     fs.unlinkSync(contextPath);
     console.log('  ✅ 삭제됨: .agent-context.json');
   }
 
-  console.log('\n⚠️  수동으로 제거해야 할 항목:');
-  console.log('  - settings.local.json에서 UserPromptSubmit hook 제거');
-  console.log('  - CLAUDE.md에서 "모드 변경 후 에이전트 자동 복원" 섹션 제거\n');
+  // 3. settings.local.json에서 hook 설정 제거
+  console.log('\n2️⃣ 설정 파일 정리:');
+  removeFromSettings(targetDir, options);
+
+  // 4. CLAUDE.md에서 규칙 섹션 제거
+  console.log('\n3️⃣ CLAUDE.md 정리:');
+  removeFromClaudeMd(options);
+
+  console.log('\n✨ 제거 완료!\n');
+  console.log('다른 설정은 그대로 유지됩니다.\n');
 }
 
 /**
