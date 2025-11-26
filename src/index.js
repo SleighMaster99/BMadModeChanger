@@ -127,8 +127,15 @@ function updateClaudeMd(options) {
 
   // 이미 규칙이 있는지 확인
   if (existingContent.includes('모드 변경(Shift+Tab) 후 에이전트 자동 복원')) {
-    console.log(`  ⏭️  건너뜀 (이미 존재): CLAUDE.md 규칙`);
-    return;
+    if (!options.force) {
+      console.log(`  ⏭️  건너뜀 (이미 존재): CLAUDE.md 규칙`);
+      console.log(`     💡 최신 버전으로 업데이트하려면 --force 옵션을 사용하세요.`);
+      return;
+    }
+    // force 옵션일 경우 기존 섹션 제거 후 재추가
+    const sectionRegex = /\n*## 모드 변경\(Shift\+Tab\) 후 에이전트 자동 복원[^]*?(?=\n## |\n# |$)/g;
+    existingContent = existingContent.replace(sectionRegex, '');
+    existingContent = existingContent.replace(/\n{3,}/g, '\n\n').trim();
   }
 
   // 규칙 추가
