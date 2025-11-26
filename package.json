@@ -1,6 +1,6 @@
 {
   "name": "bmad-mode-changer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code BMad Agent State Persistence - Automatically restore BMad agents after mode changes",
   "main": "src/index.js",
   "bin": {
