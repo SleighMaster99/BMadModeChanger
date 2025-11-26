@@ -41,26 +41,29 @@ bmad-mode-changer.exe install
 ## 명령어
 
 ```bash
-npx bmad-mode-changer install     # 설치
+npx bmad-mode-changer install     # 설치 (새 버전 있으면 자동 업데이트)
+npx bmad-mode-changer update      # install과 동일
 npx bmad-mode-changer uninstall   # 제거
-npx bmad-mode-changer status      # 상태 확인
+npx bmad-mode-changer status      # 상태 및 버전 확인
 npx bmad-mode-changer help        # 도움말
 ```
 
 ### 옵션
 
 - `--global, -g` : 전역 설정에 설치 (`~/.claude/`)
-- `--force, -f` : 기존 파일 덮어쓰기 (업데이트 시 사용)
+- `--force, -f` : 강제 재설치 (버전 무관)
 
 ## 업데이트
 
-기존 설치를 최신 버전으로 업데이트하려면 `--force` 옵션을 사용하세요:
+v1.0.3부터 `install` 명령어가 자동으로 버전을 확인하고 업데이트합니다:
 
 ```bash
+# 새 버전이 있으면 자동 업데이트
+npx bmad-mode-changer install
+
+# 강제 재설치 (버전 무관)
 npx bmad-mode-changer install --force
 ```
-
-이 명령은 CLAUDE.md의 규칙을 최신 버전으로 교체합니다.
 
 ## 작동 원리
 
@@ -75,6 +78,7 @@ npx bmad-mode-changer install --force
 |------|------|
 | `.claude/hooks/agent-state-manager.js` | Hook 스크립트 |
 | `.claude/settings.local.json` | Hook 설정 (업데이트) |
+| `.claude/.bmad-version.json` | 설치된 버전 정보 |
 | `CLAUDE.md` | 복원 규칙 (추가) |
 
 ## EXE 빌드 (개발자용)
@@ -86,6 +90,12 @@ npm run build:all      # 모든 플랫폼
 ```
 
 ## 변경 이력
+
+### v1.0.3
+- `install` 명령어가 자동으로 버전을 확인하고 업데이트
+- `update` 명령어 추가 (`install`과 동일)
+- `status` 명령어에 버전 정보 표시
+- 버전 관리 파일 (`.bmad-version.json`) 추가
 
 ### v1.0.2
 - 새 세션에서 에이전트 활성화 시 불필요한 자동 복원 메시지가 표시되던 문제 수정

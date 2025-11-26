@@ -19,18 +19,20 @@ Claude Code에서 모드 변경(Shift+Tab) 후에도
 BMad 에이전트 상태를 자동으로 복원합니다.
 
 사용법:
-  npx bmad-mode-changer install    현재 프로젝트에 설치
+  npx bmad-mode-changer install    설치 또는 자동 업데이트
+  npx bmad-mode-changer update     설치 또는 자동 업데이트 (install과 동일)
   npx bmad-mode-changer uninstall  현재 프로젝트에서 제거
   npx bmad-mode-changer status     설치 상태 확인
   npx bmad-mode-changer help       이 도움말 표시
 
 옵션:
-  --global, -g    전역 설정에 설치 (~/. claude/)
-  --force, -f     기존 파일 덮어쓰기
+  --global, -g    전역 설정에 설치 (~/.claude/)
+  --force, -f     강제 재설치 (버전 무관)
 
 예시:
-  npx bmad-mode-changer install          # 현재 프로젝트에 설치
+  npx bmad-mode-changer install          # 설치 (새 버전 있으면 자동 업데이트)
   npx bmad-mode-changer install -g       # 전역 설치
+  npx bmad-mode-changer install --force  # 강제 재설치
   npx bmad-mode-changer uninstall        # 제거
 
 GitHub: https://github.com/SleighMaster99/BMadModeChanger
@@ -44,6 +46,7 @@ async function main() {
 
   switch (command) {
     case 'install':
+    case 'update':
       await installer.install(options);
       break;
     case 'uninstall':
