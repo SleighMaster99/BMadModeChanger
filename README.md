@@ -50,7 +50,17 @@ npx bmad-mode-changer help        # 도움말
 ### 옵션
 
 - `--global, -g` : 전역 설정에 설치 (`~/.claude/`)
-- `--force, -f` : 기존 파일 덮어쓰기
+- `--force, -f` : 기존 파일 덮어쓰기 (업데이트 시 사용)
+
+## 업데이트
+
+기존 설치를 최신 버전으로 업데이트하려면 `--force` 옵션을 사용하세요:
+
+```bash
+npx bmad-mode-changer install --force
+```
+
+이 명령은 CLAUDE.md의 규칙을 최신 버전으로 교체합니다.
 
 ## 작동 원리
 
@@ -74,6 +84,19 @@ npm install
 npm run build:exe      # Windows용
 npm run build:all      # 모든 플랫폼
 ```
+
+## 변경 이력
+
+### v1.0.2
+- 새 세션에서 에이전트 활성화 시 불필요한 자동 복원 메시지가 표시되던 문제 수정
+- 자동 복원 조건 명확화: 동일 세션 내 모드 변경 시에만 복원
+- `--force` 옵션으로 기존 CLAUDE.md 규칙 업데이트 지원
+
+### v1.0.1
+- 제거(uninstall) 시 bmad-mode-changer 설정만 깔끔하게 제거하도록 개선
+
+### v1.0.0
+- 최초 릴리스
 
 ## 라이선스
 
